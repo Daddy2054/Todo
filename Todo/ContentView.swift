@@ -60,14 +60,23 @@ struct ContentView: View {
             
             List {
                 Section("Pending") {
-                    ForEach(pendingTodoItems) { todoItem in
-                        TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
+                    
+                    if pendingTodoItems.isEmpty {
+                        ContentUnavailableView("No pending todo items.", systemImage: "doc")
+                    } else {
+                        ForEach(pendingTodoItems) { todoItem in
+                            TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
+                        }
                     }
                 }
                 
                 Section("Completed") {
-                    ForEach(completedTodoItems) { todoItem in
-                        TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
+                    if completedTodoItems.isEmpty {
+                        ContentUnavailableView("No completed todo items.", systemImage: "doc")
+                    } else {
+                        ForEach(completedTodoItems) { todoItem in
+                            TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
+                        }
                     }
                 }
                 
