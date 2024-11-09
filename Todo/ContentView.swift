@@ -47,16 +47,24 @@ struct ContentView: View {
         }
     }
     
+    private func deleteTodoItem(_ todoItem: TodoItem) {
+        context.delete(todoItem)
+        do {
+            try context.save()
+        } catch {
+            print(error)
+        }
+    }
     var body: some View {
         VStack {
             TextField("Title", text: $title)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit {
-                        if isFormValid {
-                            saveTodoItem()
-                            title = ""
-                        }
+                .textFieldStyle(.roundedBorder)
+                .onSubmit {
+                    if isFormValid {
+                        saveTodoItem()
+                        title = ""
                     }
+                }
             
             List {
                 Section("Pending") {
@@ -66,7 +74,12 @@ struct ContentView: View {
                     } else {
                         ForEach(pendingTodoItems) { todoItem in
                             TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
-                        }
+                        }.onDelete(perform: {indexSet in
+                            indexSet.forEach { index in
+                                let todoItem = pendingTodoItems[index]
+                                deleteTodoItem(todoItem)
+                            }
+                        })
                     }
                 }
                 
@@ -76,14 +89,19 @@ struct ContentView: View {
                     } else {
                         ForEach(completedTodoItems) { todoItem in
                             TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
-                        }
+                        }.onDelete(perform: {indexSet in
+                            indexSet.forEach { index in
+                                let todoItem = completedTodoItems[index]
+                                deleteTodoItem(todoItem)
+                            }
+                        })
                     }
                 }
                 
             }.listStyle(.plain)
             
             Spacer()
-
+            
         }
         .padding()
         .navigationTitle("Todo")
