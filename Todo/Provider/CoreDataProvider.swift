@@ -23,13 +23,15 @@ class CoreDataProvider {
         
         for index in 1..<10 {
             let todoItem = TodoItem(context: viewContext)
-            todoItem.title = "Todo item \(index)"
+            todoItem.title = "TodoItem \(index)"
         }
+        
         do {
             try viewContext.save()
         } catch {
             print(error)
         }
+        
         return provider
     }()
     
@@ -37,12 +39,14 @@ class CoreDataProvider {
         persistentContainer = NSPersistentContainer(name: "TodoModel")
         
         if inMemory {
-            persistentContainer.persistentStoreDescriptions.first?.url = nil
+            persistentContainer.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        
         persistentContainer.loadPersistentStores { _, error in
             if let error {
-                fatalError("Failed to load persistent stores: \(error)")
+                fatalError("Core Data store failed to initialize \(error)")
             }
         }
     }
+    
 }
