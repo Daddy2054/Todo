@@ -24,6 +24,7 @@ class CoreDataProvider {
         for index in 1..<10 {
             let todoItem = TodoItem(context: viewContext)
             todoItem.title = "TodoItem \(index)"
+            todoItem.isCompleted = index % 2 == 0 ? true: false
         }
         
         do {
